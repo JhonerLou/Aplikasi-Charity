@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'phone',
+        'address',
+        'gender',
     ];
 
     /**
@@ -45,4 +49,49 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function doctorSchedules()
+    {
+        return $this->hasMany(Schedule::class, 'doctor_id');
+    }
+
+    public function doctorAppointments()
+    {
+        return $this->hasMany(Appointment::class, 'doctor_id');
+    }
+
+    public function patientAppointments()
+    {
+        return $this->hasMany(Appointment::class, 'patient_id');
+    }
+
+    public function doctorMedicalRecords()
+    {
+        return $this->hasMany(MedicalRecord::class, 'doctor_id');
+    }
+
+    public function patientMedicalRecords()
+    {
+        return $this->hasMany(MedicalRecord::class, 'patient_id');
+    }
+
+    public function doctorPayments()
+    {
+        return $this->hasMany(Payment::class, 'doctor_id');
+    }
+
+    public function patientPayments()
+    {
+        return $this->hasMany(Payment::class, 'patient_id');
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isDoctor()
+    {
+        return $this->role === 'user';
+    }
+
 }
