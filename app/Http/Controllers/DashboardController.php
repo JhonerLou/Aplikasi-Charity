@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Donation;
 use App\Models\Campaign;
+use App\Models\Donation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +22,7 @@ class DashboardController extends Controller
         $request->session()->put('dashboard_visited', true);
 
         // Show the transition dashboard page
-        return view('dashboard');
+        return view('Dashboard');
     }
 
     public function redirectToDashboard()
@@ -75,4 +75,10 @@ class DashboardController extends Controller
             'campaigns'
         ));
     }
+    public function dashboard()
+{
+    $campaign = Campaign::latest()->take(5)->get();
+    return view('dashboard', compact('campaign'));
+}
+
 }

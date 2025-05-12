@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('campaigns', function (Blueprint $table) {
+        Schema::create('campaign', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->decimal('target_amount', 12, 2);   // <-- your fundraising goal
+            $table->decimal('target_amount', 12, 2);
+            $table->string('contact_email')->nullable();
             $table->timestamps();
+            $table->string('image')->nullable();
         });
     }
 
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('campaigns');
+        //
     }
 };

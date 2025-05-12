@@ -9,38 +9,49 @@ class CampaignController extends Controller
 {
     public function index()
     {
-        $campaigns = Campaign::all();
-        return view('campaigns.index', compact('campaigns'));
+        $campaign = Campaign::all();
+        return view('campaign.index', compact('campaign'));
     }
 
     public function create()
     {
-        return view('campaigns.create');
+        return view('campaign.create');
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'title'         => 'required|string|max:255',
-            'description'   => 'nullable|string',
+        $request->validate([
+
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
             'target_amount' => 'required|numeric|min:1',
+            'contact_email' => 'nullable|email',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('campaign_images', 'public');
+            $data['image'] = $imagePath;
+        }
+
 
         Campaign::create($data);
 
-        return redirect()->route('campaigns.index')
+        return redirect()->route('dashboard')
                          ->with('success','Campaign created.');
     }
 
     public function show(Campaign $campaign)
     {
-        $campaign->load('donations');
-        return view('campaigns.show', compact('campaign'));
+        $campaign->load('donation');
+        return view('campaign.index', compact('campaign'));
     }
 
     public function edit(Campaign $campaign)
     {
-        return view('campaigns.edit', compact('campaign'));
+        return view('campaign.edit', compact('campaign'));
     }
 
     public function update(Request $request, Campaign $campaign)
@@ -49,11 +60,14 @@ class CampaignController extends Controller
             'title'         => 'required|string|max:255',
             'description'   => 'nullable|string',
             'target_amount' => 'required|numeric|min:1',
+            'contact_email' => 'nullable|email',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
         ]);
 
         $campaign->update($data);
 
-        return redirect()->route('campaigns.show', $campaign)
+        return redirect()->route('campaign.index', $campaign)
                          ->with('success','Campaign updated.');
     }
 
@@ -61,7 +75,9 @@ class CampaignController extends Controller
     {
         $campaign->delete();
 
-        return redirect()->route('campaigns.index')
+        return redirect()->route('campaign.index')
                          ->with('success','Campaign deleted.');
     }
+
+
 }

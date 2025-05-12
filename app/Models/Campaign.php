@@ -8,22 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Campaign extends Model
 {
     use HasFactory;
+    protected $table = 'campaign';
 
     protected $fillable = [
+        'id',
       'title',
       'description',
       'target_amount',
+      'image',
     ];
 
 
-    public function donations()
+    public function donation()
     {
         return $this->hasMany(Donation::class);
     }
 
     public function getRaisedAmountAttribute()
     {
-        return $this->donations()->sum('amount');
+        return $this->donation()->sum('amount');
     }
 
     public function getProgressAttribute()

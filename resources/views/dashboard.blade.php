@@ -17,7 +17,7 @@
                     </div>
 
                     <div class="mb-6">
-                        <p class="mb-4">Welcome to the Clinic Management System.</p>
+                        <p class="mb-4">Welcome to the Charity Management System.</p>
                         <p class="mb-4">You will be redirected to your {{ Auth::user()->role }} dashboard in a moment.</p>
                     </div>
 
