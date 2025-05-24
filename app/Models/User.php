@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -23,6 +24,7 @@ class User extends Authenticatable
         'phone',
         'address',
         'gender',
+        'profile_photo_path',
     ];
 
     /**
@@ -75,5 +77,12 @@ class User extends Authenticatable
     public function isUser()
     {
         return $this->role === 'user';
+    }
+    public function getProfilePhotoUrlAttribute()
+    {
+        if ($this->profile_photo_path) {
+            return Storage::url($this->profile_photo_path);
+        }
+        return asset('images/default-profile.png');
     }
 }

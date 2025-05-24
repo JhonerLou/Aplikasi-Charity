@@ -65,52 +65,6 @@
                 </p>
             </div>
 
-            <script>
-                document.getElementById('loginForm').addEventListener('submit', async function(e) {
-                    e.preventDefault();
-
-                    const email = document.getElementById('email').value;
-                    const submitButton = this.querySelector('button[type="submit"]');
-
-                    // Show loading state
-                    submitButton.disabled = true;
-                    submitButton.innerHTML = '{{ __("Checking...") }}';
-
-                    try {
-                        // Check if account exists using your existing routes
-                        const response = await fetch('{{ route("login") }}', {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'X-Requested-With': 'XMLHttpRequest'
-                            },
-                            body: new FormData(this)
-                        });
-
-                        const data = await response.json();
-
-                        if (response.ok) {
-                            // Account exists and credentials are correct
-                            this.submit();
-                        } else {
-                            // Show error from server
-                            if (data.errors) {
-                                alert(data.message || 'Invalid credentials');
-                            } else {
-                                alert('Account not found. Please register first.');
-                            }
-                            submitButton.disabled = false;
-                            submitButton.innerHTML = '{{ __("Log in") }}';
-                        }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        submitButton.disabled = false;
-                        submitButton.innerHTML = '{{ __("Log in") }}';
-                        alert('An error occurred. Please try again.');
-                    }
-                });
-            </script>
         </div>
     </div>
 </x-guest-layout>
