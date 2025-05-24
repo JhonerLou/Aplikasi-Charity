@@ -24,20 +24,26 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'is_admin'])->group(function () {
-    Route::get('/admin/users', [UserController::class, 'index'])->name('user.index');
+    Route::get('/admin/users', [UserController::class, 'index'])->name('users.index');
+    Route::delete('/admin/campaign/{campaign}', [CampaignController::class, 'destroy'])->name('campaign.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/campaign', [CampaignController::class, 'index'])->name('campaign.index');
     Route::get('/campaign/create', [CampaignController::class, 'create'])->name('campaign.create');
-    Route::post('/campaign/edit', [CampaignController::class, 'store'])->name('campaign.edit');
+    Route::post('/campaign/edit', [CampaignController::class, 'edit'])->name('campaign.edit');
+    Route::post('/campaign', [CampaignController::class, 'store'])->name('campaign.store');
+    Route::delete('/campaign/{campaign}', [CampaignController::class, 'destroy'])->name('campaign.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/donation', [DonationController::class, 'index'])->name('donation.index');
     Route::get('/donation/create', [DonationController::class, 'create'])->name('donation.create');
     Route::post('/donation/edit', [DonationController::class, 'store'])->name('donation.store');
+    Route::get('/donation/pay', [DonationController::class, 'pay'])->name('donation.pay');
     Route::post('/donation/pay', [DonationController::class, 'pay'])->name('donation.pay');
+    Route::get('/donation/success', [DonationController::class, 'success'])->name('donation.success');
+
 });
 
 // Route::post('/webhook/xendit', function (Request $request) {

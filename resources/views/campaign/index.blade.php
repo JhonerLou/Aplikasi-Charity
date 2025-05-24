@@ -33,6 +33,15 @@
                                 class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded">
                                  Donate
                              </a>
+                             @if(auth()->check() && auth()->user()->isAdmin())
+                             <form action="{{ route('campaign.destroy', $camp->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this campaign?');">
+                                 @csrf
+                                 @method('DELETE')
+                                 <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-4 rounded">
+                                     Delete
+                                 </button>
+                             </form>
+                         @endif
                         </div>
                     </div>
                 @endforeach

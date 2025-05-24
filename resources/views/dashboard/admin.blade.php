@@ -25,7 +25,7 @@
         <h3 class="font-semibold mb-4">Recent Campaigns</h3>
         @forelse($recentCampaigns as $camp)
           <div class="border-b last:border-0 py-2">
-            <a href="{{ route('campaigns.show', $camp) }}" class="text-indigo-600 hover:underline">
+            <a href="{{ route('campaign.index', $camp->title ) }}" class="text-indigo-600 hover:underline">
               {{ $camp->title }}
             </a>
           </div>

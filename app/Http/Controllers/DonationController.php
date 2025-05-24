@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
+use Illuminate\Support\Facades\File;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
 use Xendit\Configuration;
 use Xendit\Invoice\InvoiceApi;
 use Xendit\Invoice\CreateInvoiceRequest;
+
 
 class DonationController extends Controller
 {
@@ -34,6 +36,16 @@ class DonationController extends Controller
             'amount' => 'required|numeric|min:1',
             'message' => 'nullable|string|max:500',
         ]);
+        $donation = Donation::create([
+            'user_id' => auth()->id(),
+            'campaign_id' => $request->campaign_id,
+            'amount' => $request->amount,
+            'message' => $request->message,
+            'payment_status' => 'pending',
+        ]);
+
+        // Redirect to the pay.blade.php with the donation object
+        return redirect()->route('donation.pay', $donation);
 
     }
 
@@ -70,26 +82,24 @@ class DonationController extends Controller
     }
 
 
-    public function pay(Request $request, Donation $donation)
-    {
-        Xendit::setApiKey(env('xnd_public_development_j_kiheSF71qe9PigQUBS1VxmUDiqOQ9ESkgdl8z1gWv2NnTMHdrQmCODx5gyqNbm'));
+    // public function pay(Request $request, Donation $donation)
+    // {
+    //     MidtransConfig::init();
 
-        $params = [
-            'external_id' => 'donation-' . $donation->id,
-            'payer_email' => $donation->user->email,
-            'description' => 'Donation for: ' . $donation->campaign->title,
-            'amount' => (int) $donation->amount,
-        ];
+    //     $params = [
+    //         'transaction_details' => [
+    //             'order_id' => 'DON-' . $donation->id,
+    //             'gross_amount' => (int)$donation->amount,
+    //         ],
+    //         'customer_details' => [
+    //             'first_name' => $donation->user->name,
+    //             'email' => $donation->user->email,
+    //         ],
+    //     ];
 
-        $invoice = \Xendit\Invoice::create($params);
+    //     $snapToken = \Midtrans\Snap::getSnapToken($params);
 
-        // Optional: Save invoice ID or status
-        $donation->update([
-            'payment_status' => 'pending',
-            'xendit_invoice_id' => $invoice['id'],
-        ]);
-
-        return redirect($invoice['invoice_url']);
-    }
+    //     return view('donation.pay', compact('snapToken', 'donation'));
+    // }
 
 }

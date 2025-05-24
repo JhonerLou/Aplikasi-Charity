@@ -4,7 +4,7 @@
     </x-slot>
 
     <div class="py-6 px-4 max-w-xl mx-auto">
-        <form method="POST" action="{{ route('donation') }}">
+        <form method="POST" action="{{ route('donation.store') }}">
             @csrf
 
             <div class="mb-4">

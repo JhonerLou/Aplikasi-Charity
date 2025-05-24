@@ -24,10 +24,22 @@
             <h3 class="font-semibold mb-4">Donate to a Campaign</h3>
             <a href="{{ route('campaign.index') }}">See All Campaigns</a>
             @foreach ($campaigns as $camp)
-                <div class="border-b last:border-0 py-2 flex justify-between items-center">
-                    <span>{{ $camp->title }}</span>
-                    <a href="{{ route('donation.create', ['campaign_id' => $camp->id]) }}"
-                        class="text-indigo-600 hover:underline">Donate →</a>
+                <div class="border-b last:border-0 py-4 flex items-center space-x-4">
+                    @if ($camp->image)
+                        <img src="{{ asset('storage/' . $camp->image) }}" alt="{{ $camp->title }}"
+                            class="w-16 h-16 object-cover rounded" />
+                    @else
+                        <div
+                            class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-500 text-sm">
+                            No Image
+                        </div>
+                    @endif
+
+                    <div class="flex-1">
+                        <span class="block font-semibold text-gray-800">{{ $camp->title }}</span>
+                        <a href="{{ route('donation.create', ['campaign_id' => $camp->id]) }}"
+                            class="text-indigo-600 hover:underline text-sm">Donate →</a>
+                    </div>
                 </div>
             @endforeach
         </div>

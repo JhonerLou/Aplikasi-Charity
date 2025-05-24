@@ -27,11 +27,11 @@
                                 <td class="px-4 py-2 text-green-600 font-semibold">${{ number_format($don->amount, 2) }}</td>
                                 <td class="px-4 py-2 capitalize">{{ $don->payment_status }}</td>
                                 <td class="px-4 py-2">{{ $don->created_at->format('Y-m-d') }}</td>
-                                <td class="px-4 py-2">
+                                <td class="px-4 py-2 space-x-2">
                                     @if ($don->payment_status === 'pending')
-                                        <form action="{{ route('donation.create', $don->id) }}" method="POST">
+                                        <form action="{{ route('donation.pay', $don->id) }}" method="POST" class="inline">
                                             @csrf
-                                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded">
+                                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded">
                                                 Pay
                                             </button>
                                         </form>
