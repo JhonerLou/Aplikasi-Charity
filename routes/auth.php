@@ -57,3 +57,11 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });
+
+Route::post('/check-account', function(Request $request) {
+    $user = User::where('email', $request->email)->first();
+
+    return response()->json([
+        'exists' => $user ? true : false
+    ]);
+})->middleware('web');

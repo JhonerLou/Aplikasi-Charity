@@ -18,52 +18,33 @@ class GoogleController extends Controller
     }
 
     public function handleGoogleCallback()
-    {
-        try {
-            // Get the Google user
-            $googleUser = Socialite::driver('google')->user();
+{
+    try {
+        $googleUser = Socialite::driver('google')->user();
 
-            // Verify we have an email
-            if (empty($googleUser->email)) {
-                return redirect()->route('login')
-                    ->with('error', 'Google login failed - no email provided');
-            }
+        $user = User::where('email', $googleUser->email)
+            ->orWhere('google_id', $googleUser->id)
+            ->first();
 
-            // Find existing user
-            $user = User::where('google_id', $googleUser->id)
-                ->orWhere('email', $googleUser->email)
-                ->first();
+        if (!$user) {
+            // Create user but mark as needing completion
+            $user = User::create([
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'google_id' => $googleUser->id,
+                'password' => bcrypt(Str::random(24)),
+                'registration_complete' => false
+            ]);
 
-            if ($user) {
-                // Update Google ID if missing
-                if (empty($user->google_id)) {
-                    $user->google_id = $googleUser->id;
-                    $user->save();
-                }
-            } else {
-                // Create new user
-                $user = User::create([
-                    'name' => $googleUser->name,
-                    'email' => $googleUser->email,
-                    'google_id' => $googleUser->id,
-                    'password' => bcrypt(Str::random(16)), // More secure random password
-                ]);
-            }
-
-            // Log in the user
-            Auth::login($user, true); // "true" for "remember me"
-
-            return redirect()->intended('/dashboard');
-
-        } catch (InvalidStateException $e) {
-            // Specific handling for state errors
-            return redirect()->route('login')
-                ->with('error', 'Session expired. Please try again.');
-
-        } catch (\Exception $e) {
-            // General error handling
-            return redirect()->route('login')
-                ->with('error', 'Google login failed. Please try again.');
+            Auth::login($user);
+            return redirect()->route('profile.edit')->with('info', 'Please complete your registration');
         }
+
+        Auth::login($user);
+        return redirect()->intended('/dashboard');
+
+    } catch (\Exception $e) {
+        return redirect()->route('login')->with('error', 'Google authentication failed.');
     }
+}
 }
