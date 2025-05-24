@@ -7,6 +7,7 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\GoogleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -52,4 +53,7 @@ Route::middleware(['auth'])->group(function () {
 //     return response()->json(['status' => 'success']);
 // });
 
+
+Route::get('/auth/redirect', [GoogleController::class, 'redirect'])->name('redirect');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 require __DIR__ . '/auth.php';
