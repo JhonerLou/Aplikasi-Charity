@@ -8,16 +8,37 @@ use Illuminate\Support\Facades\Storage;
 
 class CampaignController extends Controller
 {
-    public function index()
+
+    public function index(Request $request)
     {
-        $campaign = Campaign::all();
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'category' => 'nullable|in:natural disaster,orphanage,needs crisis,special needs'
+        ]);
+
+        $query = Campaign::query();
+
+        // Search functionality
+        if (!empty($validated['search'])) {
+            $query->where(function ($q) use ($validated) {
+                $q->where('title', 'like', "%{$validated['search']}%")
+                    ->orWhere('description', 'like', "%{$validated['search']}%");
+            });
+        }
+
+        // Category filter
+        if ($request->has('category')) {
+            $query->where('category', $request->input('category'));
+        }
+
+        $campaign = $query->paginate(12);
         return view('campaign.index', compact('campaign'));
     }
 
     public function create()
     {
         $categories = ['Natural Disaster', 'Orphanage', 'Needs Crisis', 'Special Needs'];
-        return view('campaign.create',compact('categories'));
+        return view('campaign.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -28,8 +49,8 @@ class CampaignController extends Controller
             'description' => 'nullable|string',
             'target_amount' => 'required|numeric|min:1',
             'contact_email' => 'nullable|email',
-            'category'      => 'required|in:Natural Disaster,Orphanage,Needs Crisis,Special Needs',
-            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category' => 'required|in:Natural Disaster,Orphanage,Needs Crisis,Special Needs',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->all();
@@ -43,7 +64,7 @@ class CampaignController extends Controller
         Campaign::create($data);
 
         return redirect()->route('dashboard')
-                         ->with('success','Campaign created.');
+            ->with('success', 'Campaign created.');
     }
 
     public function show(Campaign $campaign)
@@ -55,18 +76,18 @@ class CampaignController extends Controller
     public function edit(Campaign $campaign)
     {
         $categories = ['Natural Disaster', 'Orphanage', 'Needs Crisis', 'Special Needs'];
-        return view('campaign.edit', compact('campaign','categories'));
+        return view('campaign.edit', compact('campaign', 'categories'));
     }
 
     public function update(Request $request, Campaign $campaign)
     {
         $data = $request->validate([
-            'title'         => 'required|string|max:255',
-            'description'   => 'nullable|string',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
             'target_amount' => 'required|numeric|min:1',
             'contact_email' => 'nullable|email',
-            'category'      => 'required|in:Natural Disaster,Orphanage,Needs Crisis,Special Needs',
-            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category' => 'required|in:Natural Disaster,Orphanage,Needs Crisis,Special Needs',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
 
         ]);
 
@@ -83,7 +104,7 @@ class CampaignController extends Controller
         $campaign->update($data);
 
         return redirect()->route('campaign.index')
-                         ->with('success','Campaign updated.');
+            ->with('success', 'Campaign updated.');
     }
 
     public function destroy(Campaign $campaign)
@@ -94,7 +115,7 @@ class CampaignController extends Controller
         $campaign->delete();
 
         return redirect()->route('campaign.index')
-                         ->with('success','Campaign deleted.');
+            ->with('success', 'Campaign deleted.');
     }
 
 
