@@ -33,8 +33,11 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/campaign', [CampaignController::class, 'index'])->name('campaign.index');
     Route::get('/campaign/create', [CampaignController::class, 'create'])->name('campaign.create');
-    Route::post('/campaign/edit', [CampaignController::class, 'edit'])->name('campaign.edit');
     Route::post('/campaign', [CampaignController::class, 'store'])->name('campaign.store');
+
+    // Specific campaign routes
+    Route::get('/campaign/{campaign}/edit', [CampaignController::class, 'edit'])->name('campaign.edit');
+    Route::put('/campaign/{campaign}', [CampaignController::class, 'update'])->name('campaign.update');
     Route::delete('/campaign/{campaign}', [CampaignController::class, 'destroy'])->name('campaign.destroy');
 });
 

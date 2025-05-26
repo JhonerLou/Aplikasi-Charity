@@ -14,7 +14,9 @@ class Campaign extends Model
         'id',
       'title',
       'description',
+      'category',
       'target_amount',
+      'contact_email',
       'image',
     ];
 

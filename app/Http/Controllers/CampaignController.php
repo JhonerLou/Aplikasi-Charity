@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Campaign;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CampaignController extends Controller
 {
@@ -15,7 +16,8 @@ class CampaignController extends Controller
 
     public function create()
     {
-        return view('campaign.create');
+        $categories = ['Natural Disaster', 'Orphanage', 'Needs Crisis', 'Special Needs'];
+        return view('campaign.create',compact('categories'));
     }
 
     public function store(Request $request)
@@ -26,6 +28,7 @@ class CampaignController extends Controller
             'description' => 'nullable|string',
             'target_amount' => 'required|numeric|min:1',
             'contact_email' => 'nullable|email',
+            'category'      => 'required|in:Natural Disaster,Orphanage,Needs Crisis,Special Needs',
             'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -51,7 +54,8 @@ class CampaignController extends Controller
 
     public function edit(Campaign $campaign)
     {
-        return view('campaign.edit', compact('campaign'));
+        $categories = ['Natural Disaster', 'Orphanage', 'Needs Crisis', 'Special Needs'];
+        return view('campaign.edit', compact('campaign','categories'));
     }
 
     public function update(Request $request, Campaign $campaign)
@@ -61,18 +65,32 @@ class CampaignController extends Controller
             'description'   => 'nullable|string',
             'target_amount' => 'required|numeric|min:1',
             'contact_email' => 'nullable|email',
+            'category'      => 'required|in:Natural Disaster,Orphanage,Needs Crisis,Special Needs',
             'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
 
         ]);
 
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($campaign->image) {
+                Storage::disk('public')->delete($campaign->image);
+            }
+
+            $imagePath = $request->file('image')->store('campaign_images', 'public');
+            $data['image'] = $imagePath;
+        }
+
         $campaign->update($data);
 
-        return redirect()->route('campaign.index', $campaign)
+        return redirect()->route('campaign.index')
                          ->with('success','Campaign updated.');
     }
 
     public function destroy(Campaign $campaign)
     {
+        if ($campaign->image) {
+            Storage::disk('public')->delete($campaign->image);
+        }
         $campaign->delete();
 
         return redirect()->route('campaign.index')
