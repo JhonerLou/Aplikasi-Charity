@@ -1,10 +1,12 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-white leading-tight">
-            {{ __('Welcome to CharityHub') }}
-        </h2>
-    </x-slot>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to CharityHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
     <!-- Full-page gradient background -->
     <div class="min-h-screen py-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,9 +34,9 @@
 
                     <!-- Welcome message with bigger text -->
                     <div class="text-center mb-12">
-                        <h3 class="text-4xl font-bold text-white mb-4">Welcome back, {{ Auth::user()->name }}!</h3>
+                        <h3 class="text-4xl font-bold text-white mb-4">Welcome back, User!</h3>
                         <div class="inline-block px-6 py-2 bg-white/20 rounded-full backdrop-blur-sm">
-                            <span class="text-lg font-semibold text-white">Role: <span class="capitalize">{{ Auth::user()->role }}</span></span>
+                            <span class="text-lg font-semibold text-white">Role: <span class="capitalize">Member</span></span>
                         </div>
                     </div>
 
@@ -202,7 +204,8 @@
 
             // Redirect function
             function redirect() {
-                window.location.href = "{{ route('dashboard.redirect') }}";
+                // Change this URL to where you want to redirect
+                window.location.href = "/dashboard";
             }
 
             // Skip button functionality
@@ -217,4 +220,5 @@
             setTimeout(startCountdown, 1500); // Wait for checkmark animation to complete
         });
     </script>
-</x-app-layout>
+</body>
+</html>

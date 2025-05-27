@@ -25,9 +25,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/redirect', [DashboardController::class, 'redirectToDashboard'])->name('dashboard.redirect');
 });
 
-Route::middleware(['auth', 'is_admin'])->group(function () {
-    Route::get('/admin/users', [UserController::class, 'index'])->name('users.index');
-    Route::delete('/admin/campaign/{campaign}', [CampaignController::class, 'destroy'])->name('campaign.destroy');
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
