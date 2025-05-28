@@ -25,7 +25,7 @@
                 <x-input-label for="category" :value="__('Category')" />
                 <select id="category" name="category" class="block mt-1 w-full rounded border-gray-300">
                     @foreach (['Natural Disaster', 'Orphanage', 'Needs Crisis', 'Special Needs'] as $cat)
-                        <option value="{{ $cat }}" {{ old('category', $campaign->category) === $cat ? 'selected' : '' }}>
+                        <option value="{{ $cat }}" {{ old('category') === $cat ? 'selected' : '' }}>
                             {{ ucfirst($cat) }}
                         </option>
                     @endforeach

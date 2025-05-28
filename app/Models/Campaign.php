@@ -12,12 +12,13 @@ class Campaign extends Model
 
     protected $fillable = [
         'id',
-      'title',
-      'description',
-      'category',
-      'target_amount',
-      'contact_email',
-      'image',
+        'title',
+        'description',
+        'category',
+        'target_amount',
+        'contact_email',
+        'image',
+        'user_id',
     ];
 
 
@@ -35,8 +36,12 @@ class Campaign extends Model
     {
         $raised = $this->raised_amount;
         return $this->target_amount
-            ? round( ($raised / $this->target_amount) * 100, 2 )
+            ? round(($raised / $this->target_amount) * 100, 2)
             : 0;
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
 

@@ -11,12 +11,13 @@ class CampaignController extends Controller
 
     public function index(Request $request)
     {
+        $query = Campaign::query()->with('user');
         $validated = $request->validate([
             'search' => 'nullable|string|max:255',
             'category' => 'nullable|in:natural disaster,orphanage,needs crisis,special needs'
         ]);
 
-        $query = Campaign::query();
+
 
         // Search functionality
         if (!empty($validated['search'])) {
@@ -43,7 +44,8 @@ class CampaignController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+
+        $validated = $request->validate([
 
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -52,18 +54,21 @@ class CampaignController extends Controller
             'category' => 'required|in:Natural Disaster,Orphanage,Needs Crisis,Special Needs',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+        $campaign = new Campaign($validated);
+        $campaign->user_id = auth()->id();
 
         $data = $request->all();
+        $data['user_id'] = auth()->id();
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('campaign_images', 'public');
             $data['image'] = $imagePath;
         }
 
-
         Campaign::create($data);
+        $campaign->save();
 
-        return redirect()->route('dashboard')
+        return redirect()->route('campaign.index')
             ->with('success', 'Campaign created.');
     }
 
@@ -75,12 +80,19 @@ class CampaignController extends Controller
 
     public function edit(Campaign $campaign)
     {
+        if (auth()->id() !== $campaign->user_id && !auth()->user()->isAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
         $categories = ['Natural Disaster', 'Orphanage', 'Needs Crisis', 'Special Needs'];
         return view('campaign.edit', compact('campaign', 'categories'));
     }
 
     public function update(Request $request, Campaign $campaign)
     {
+        if (auth()->id() !== $campaign->user_id && !auth()->user()->isAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
