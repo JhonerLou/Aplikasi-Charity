@@ -128,7 +128,10 @@ return [
     //     // ...
     //     App\Providers\MidtransServiceProvider::class,
     // ],
-
+    'aliases' => [
+        // ...
+        'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
+    ]
 
 
 ];

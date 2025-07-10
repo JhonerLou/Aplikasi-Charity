@@ -20,7 +20,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        @forelse ($donation as $don)
+                        @forelse ($donations as $don)
                             <tr>
                                 <td class="px-4 py-2">{{ $don->user->name ?? 'Anonymous' }}</td>
                                 <td class="px-4 py-2">{{ $don->campaign->title ?? '-' }}</td>
@@ -49,7 +49,7 @@
                 </table>
 
                 <div class="mt-6">
-                    {{ $donation->links() }}
+                    {{ $donations->links() }}
                 </div>
             </div>
         </div>

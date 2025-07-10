@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="text-2xl font-bold text-gray-800">Your Dashboard</h2>
-            <div class="text-sm text-gray-500">Welcome back, {{ Auth::user()->name }}!</div>
+            <div class="text-sm text-gray-500">Welcome back, {{ auth()->user()->name }}!</div>
         </div>
     </x-slot>
 

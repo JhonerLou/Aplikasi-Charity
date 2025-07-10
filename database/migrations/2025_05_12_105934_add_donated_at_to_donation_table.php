@@ -12,7 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('donation', function (Blueprint $table) {
-            $table->timestamp('donated_at')->nullable()->after('payment_status');
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('campaign_id')->constrained()->onDelete('cascade');
+            $table->decimal('amount', 15, 2);
+            $table->text('message')->nullable();
+            $table->string('donor_name');
+            $table->string('donor_email')->nullable();
+            $table->boolean('is_anonymous')->default(false);
+            $table->string('payment_status')->default('pending');
+            $table->timestamp('paid_at')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('donation', function (Blueprint $table) {
-            $table->dropColumn('donated_at');
-        });
+        
     }
 };

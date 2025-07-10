@@ -9,9 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\GoogleController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', function () { return view('welcome'); });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -44,11 +42,11 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/donation', [DonationController::class, 'index'])->name('donation.index');
     Route::get('/donation/create', [DonationController::class, 'create'])->name('donation.create');
-    Route::post('/donation/edit', [DonationController::class, 'store'])->name('donation.store');
-    Route::get('/donation/pay', [DonationController::class, 'pay'])->name('donation.pay');
-    Route::post('/donation/pay', [DonationController::class, 'pay'])->name('donation.pay');
-    Route::get('/donation/success', [DonationController::class, 'success'])->name('donation.success');
-
+    Route::post('/donation', [DonationController::class, 'store'])->name('donation.store');
+    Route::get('/donation/{donation}', [DonationController::class, 'show'])->name('donation.show');
+    Route::get('/donation/{donation}/pay', [DonationController::class, 'pay'])->name('donation.pay');
+    Route::post('/donation/{donation}/process', [DonationController::class, 'processPayment'])->name('donation.process');
+    Route::get('/donation/{donation}/success', [DonationController::class, 'success'])->name('donation.success');
 });
 
 // Route::post('/webhook/xendit', function (Request $request) {
